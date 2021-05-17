@@ -1,27 +1,32 @@
 pipeline {
     agent any
 
-    stages {
+    parameters {
+        string(name: 'WWWROOT', defaultValue: '/var/www/html', description: '')
+        string(name: 'SRC', defaultValue: '~labasse/site', description: '')
+    }
+
+    stages {        
         stage('Prerequisites') {
             steps {
-                sh 'mkdir -p /var/www/html/doc'
+                sh "mkdir -p ${params.WWWROOT}/doc"
             }
         }
         stage('Build') {
+            environment {
+                CONV = 'pandoc'
+            }
             steps {
+                sh "$CONV -s ${params.SRC}/index.md -o index.html"
                 
-
-                sh 'pandoc -s ~labasse/site/index.md -o index.html'
-                
-                sh 'pandoc -s ~labasse/site/index.md -o index.docx'
+                sh "$CONV -s ${params.SRC}/index.md -o index.docx"
             }
         }
         stage('Publish') {
             steps {
+                sh "mv index.html ${params.WWWROOT}"
                 
-                sh 'mv index.html /var/www/html'
-                
-                sh 'mv index.docx /var/www/html/doc'
+                sh "mv index.docx ${params.WWWROOT}/doc"
             }
         }
     }
