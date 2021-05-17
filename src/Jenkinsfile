@@ -2,7 +2,7 @@ pipeline {
     agent{
         docker {
             image 'node:alpine'
-            args '-e NPM_CONFIG_LOGLEVEL=info'
+            args '-e NPM_CONFIG_LOGLEVEL=info -p 8000:8000'
         }
     }
     stages{
@@ -15,6 +15,18 @@ pipeline {
             steps {
                 sh 'sh ./scripts/test.sh'
             }
-        }        
+        }
+        stage('validate') {
+            steps {
+                input message:'Validation manuelle (voir tâche suivante)', ok:'Allons-y'
+                sh 'sh ./scripts/validate.sh 8000'
+            }
+        }
+        stage('deploy') {
+            steps {
+                archiveArtifacts artifacts: 'out/*', fingerprint: true
+                sh 'sh ./scripts/deploy.sh'
+            }
+        }
     }
 }

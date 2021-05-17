@@ -1,0 +1,47 @@
+services:
+
+    server:
+      image: labasse/jenkins
+      restart: always
+      networks: 
+        - link
+      ports:
+        - 8080:8080
+        - 50000:50000
+      tty: true
+      volumes:
+  #      - $HOME:/home
+        - data:/var/jenkins_home 
+        - certs:/certs/client:ro 
+        - c:\Users\user:/home
+      environment:
+        - DOCKER_CERT_PATH=/certs/client
+        - DOCKER_TLS_VERIFY=1
+        - DOCKER_HOST=tcp://docker:2376
+  
+    docker:
+      image: docker:dind
+      restart: always
+      privileged: true
+      networks:
+        - link
+      ports:
+        - 2376:2376
+        - 8000:8000
+      tty: true
+      volumes:
+  #      - $HOME:/home
+        - c:\Users\user:/home
+        - certs:/certs/client
+        - data:/var/jenkins_home
+      environment:
+        - DOCKER_TLS_CERTDIR=/certs
+  
+  networks:
+    link:
+  
+  volumes:
+    certs:
+    data:
+  
+  
