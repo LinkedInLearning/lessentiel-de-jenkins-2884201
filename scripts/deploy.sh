@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-echo "Test passed"
+echo "Deploy done"
