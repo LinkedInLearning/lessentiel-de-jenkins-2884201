@@ -1,0 +1,1 @@
+curl http://localhost:8080/job/Site/buildWithParameters --user utilisateur:key000000000 --data WWWROOT=/var/www/html --data SRC=~labasse/site
