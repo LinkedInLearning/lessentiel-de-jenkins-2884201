@@ -1,0 +1,37 @@
+// Paramètres :
+// [x] Construire après le build sur d'autres projets :
+//      Projet à surveiller : PostfixeLib
+//      [x] Déclencher que si la construction est stable
+pipeline {
+    agent any
+    
+    environment { 
+        PROJET = '~labasse/cpp/Calculatrice'
+        DEP = 'PostfixeLib'
+        ARTIFACT = 'Calculatrice'
+    }
+    stages {
+        stage('Init') {
+            steps{
+                sh "cp ${env.PROJET}/* ."
+                
+                copyArtifacts fingerprintArtifacts: true, projectName: env.DEP, selector: lastSuccessful()
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'make'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'make test'
+            }
+        }
+    }
+    post {
+        success {
+            archiveArtifacts artifacts: env.ARTIFACT, fingerprint: true
+        }
+    }
+}

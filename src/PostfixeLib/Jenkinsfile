@@ -1,0 +1,39 @@
+// Paramètres
+// [x] Permission to Copy Artifact 
+//      Projects to allow copy artifacts : Calculatrice
+// [x] Construire après le build sur d'autres projets :
+//      Projet à surveiller : PileLib
+//      [x] Déclencher que si la construction est stable
+pipeline {
+    agent any
+    
+    environment { 
+        PROJET = '~labasse/cpp/PostfixeLib'
+        DEP = 'PileLib'
+        ARTIFACT = 'Postfixe.hpp, Pile.hpp'
+    }
+    stages {
+        stage('Init') {
+            steps{
+                sh "cp ${env.PROJET}/* ."
+                
+                copyArtifacts fingerprintArtifacts: true, projectName: env.DEP, selector: lastSuccessful()
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'make'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'make test'
+            }
+        }
+    }
+    post {
+        success {
+            archiveArtifacts artifacts: env.ARTIFACT, fingerprint: true
+        }
+    }
+}
