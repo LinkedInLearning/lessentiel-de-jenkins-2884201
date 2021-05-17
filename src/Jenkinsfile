@@ -2,9 +2,26 @@ pipeline {
     agent any
 
     stages {
-        stage('Hello') {
+        stage('Prerequisites') {
             steps {
-                echo 'Hello world'
+                sh 'mkdir -p /var/www/html/doc'
+            }
+        }
+        stage('Build') {
+            steps {
+                
+
+                sh 'pandoc -s ~labasse/site/index.md -o index.html'
+                
+                sh 'pandoc -s ~labasse/site/index.md -o index.docx'
+            }
+        }
+        stage('Publish') {
+            steps {
+                
+                sh 'mv index.html /var/www/html'
+                
+                sh 'mv index.docx /var/www/html/doc'
             }
         }
     }
