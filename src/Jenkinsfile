@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    parameters {
-        string(name: 'WWWROOT', defaultValue: '/var/www/html', description: '')
-        string(name: 'SRC', defaultValue: '~labasse/site', description: '')
-    }
-
     stages {        
         stage('Prerequisites') {
             steps {
@@ -22,12 +17,42 @@ pipeline {
                 sh "$CONV -s ${params.SRC}/index.md -o index.docx"
             }
         }
+        stage('Tests') {
+            steps {
+                sh 'tidy -qe index.html 2> test.txt'
+            }
+        }
         stage('Publish') {
             steps {
-                sh "mv index.html ${params.WWWROOT}"
+                sh "cp index.html ${params.WWWROOT}"
                 
-                sh "mv index.docx ${params.WWWROOT}/doc"
+                sh "cp index.docx ${params.WWWROOT}/doc"
             }
+        }
+    }
+    post {
+        success {
+            writeFile file: 'test.xml', text: '''<?xml version="1.0" encoding="UTF-8"?>
+                <testsuites name="Tidy" tests="1" errors="0">
+                  <testsuite name="HTML" tests="1" errors="0">
+                    <testcase name="HTML tidy" classname="index.html"></testcase>
+                  </testsuite>
+                </testsuites>'''
+            junit 'test.xml'
+        }
+        failure {
+            writeFile file: 'test.xml', text: '''<?xml version="1.0" encoding="UTF-8"?>
+                <testsuites name="Tidy" tests="1" errors="1">
+                  <testsuite name="HTML" tests="1" errors="1">
+                    <testcase name="HTML tidy" classname="index.html">
+                      <failure type="HTML"><![CDATA['''
+            sh 'cat test.txt >> test.xml'
+            sh 'echo "]]></failure></testcase></testsuite></testsuites>" >> test.xml'
+            archiveArtifacts artifacts: 'index.html, index.docx, test.xml', fingerprint: true
+            junit 'test.xml'
+        }
+        always {
+            archiveArtifacts artifacts: 'index.html, index.docx', fingerprint: true
         }
     }
 }
