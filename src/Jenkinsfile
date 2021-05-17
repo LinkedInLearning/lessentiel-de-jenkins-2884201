@@ -11,19 +11,43 @@ pipeline {
             environment {
                 CONV = 'pandoc'
             }
-            steps {
-                sh "$CONV -s ${params.SRC}/index.md -o index.html"
-                sh "$CONV -s ${params.SRC}/legal.md -o legal.html"
-                sh "$CONV -s ${params.SRC}/contact.md -o contact.html"
-                
-                sh "$CONV -s ${params.SRC}/index.md -o index.docx"
+            parallel {
+                stage('build-index') {
+                    steps {
+                       sh "$CONV -s ${params.SRC}/index.md -o index.html"
+                       sh "$CONV -s ${params.SRC}/index.md -o index.docx"
+                    }
+                }
+                stage('build-legal') {
+                    steps {
+                        sh "$CONV -s ${params.SRC}/legal.md -o legal.html"
+                    }
+                }
+                stage('build-contact') {
+                    steps {
+                        sh "$CONV -s ${params.SRC}/contact.md -o contact.html"
+                    }   
+                }
             }
+            
         }
         stage('Tests') {
-            steps {
-                sh 'tidy -qe index.html 2> test.txt'
-                sh 'tidy -qe legal.html 2>> test.txt'
-                sh 'tidy -qe contact.html 2>> test.txt'
+            parallel {
+                stage('test-index') {
+                    steps {
+                        sh 'tidy -qe index.html 2> test-index.txt'    
+                    }
+                }
+                stage('test-legal') {
+                    steps {
+                        sh 'tidy -qe legal.html 2> test-legal.txt'    
+                    }
+                }
+                stage('test-contact') {
+                    steps {
+                        sh 'tidy -qe contact.html 2> test-contact.txt'    
+                    }   
+                }
             }
         }
         stage('Publish') {
@@ -50,7 +74,9 @@ pipeline {
                   <testsuite name="HTML" tests="1" errors="1">
                     <testcase name="HTML tidy" classname="index.html">
                       <failure type="HTML"><![CDATA['''
-            sh 'cat test.txt >> test.xml'
+            sh 'cat test-index.txt >> test.xml'
+            sh 'cat test-legal.txt >> test.xml'
+            sh 'cat test-contact.txt >> test.xml'
             sh 'echo "]]></failure></testcase></testsuite></testsuites>" >> test.xml'
             junit 'test.xml'
         }
