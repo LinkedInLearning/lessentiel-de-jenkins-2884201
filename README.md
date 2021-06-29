@@ -17,6 +17,11 @@ Certaines branches auront un état de début et de fin. Elles sont marquées par
 2. Clôner ce dépôt en utilisant un terminal (Mac/Linux), CMD (Windows), ou un outil graphique comme SourceTree ou Github Desktop
 3. Suivre les instructions du chapitre
 
+## Instructeur
+
+**Sylvain Labasse** 
+
+ Retrouvez toutes les formations de [Sylvain Labasse](https://www.linkedin.com/learning/instructors/sylvain-labasse) sur LinkedIn Learning.
 
 [0]: https://www.linkedin.com/learning/l-essentiel-de-jenkins
 
