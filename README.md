@@ -1,6 +1,10 @@
 # L'essentiel de Jenkins
 Dépôt du cours `L'essentiel de Jenkins`. Le cours complet est disponible sur [LinkedIn Learning][lil-course-url].
 
+![COURSENAME][lil-thumbnail-url] 
+
+Dans cette formation consacrée aux développeurs, vous découvrirez Jenkins, un outil open source d'intégration DevOps. Après une brève présentation, Sylvain Labasse vous propose une mise en œuvre pratique reposant sur des exemples concrets. Vous verrez comment démarrer, créer et gérer votre premier pipeline, puis vous passerez aux projets multibranches. À la fin de cette formation, vous aborderez également Jenkins X et son utilisation avec GitOps, ainsi que le déploiement de vos projets.
+
 ## Instructions
 Ce dépôt possède une ou deux branches par leçon (vidéo de cours). Vous pouvez utilisez le menu déroulant des branches dans GitHub pour changer de branche
 et visualiser le cours à cette étape. Vous pouvez également ajouter `/tree/BRANCH-NAME` à l'url pour accéder à la branche qui vous intéresse.
@@ -17,7 +21,13 @@ Certaines branches auront un état de début et de fin. Elles sont marquées par
 2. Clôner ce dépôt en utilisant un terminal (Mac/Linux), CMD (Windows), ou un outil graphique comme SourceTree ou Github Desktop
 3. Suivre les instructions du chapitre
 
+## Instructeur
+
+**Sylvain Labasse** 
+
+ Retrouvez toutes les formations de [Sylvain Labasse](https://www.linkedin.com/learning/instructors/sylvain-labasse) sur LinkedIn Learning.
 
 [0]: https://www.linkedin.com/learning/l-essentiel-de-jenkins
 
 [lil-course-url]: https://www.linkedin.com/learning/l-essentiel-de-jenkins
+[lil-thumbnail-url]: https://cdn.lynda.com/course/2884201/2884201-1624426408958-16x9.jpg
